@@ -6,7 +6,7 @@
 - 建立逆向映射数学工具（章节摆放 -> XR Rig 逆向补偿）
 - 建立 JSON 序列化读写工具
 
-## Step 2（下一步）
+## Step 2（进行中）
 - 实现 Solver 输入输出 DTO 与 Cost BreakDown 结构
 - 实现 Link / Overlap / Safety / Gravity / Rot 五项成本计算器
 - 实现贪婪初始化求解流程

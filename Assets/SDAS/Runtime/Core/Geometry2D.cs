@@ -27,6 +27,51 @@ namespace SDAS.Runtime.Core
             return !HasSeparatingAxis(polyA, polyB) && !HasSeparatingAxis(polyB, polyA);
         }
 
+        public static bool IsPointInPolygon(Vector2 point, IReadOnlyList<Vector2> polygon)
+        {
+            if (polygon == null || polygon.Count < 3)
+            {
+                return false;
+            }
+
+            var inside = false;
+            var j = polygon.Count - 1;
+            for (var i = 0; i < polygon.Count; i++)
+            {
+                var pi = polygon[i];
+                var pj = polygon[j];
+
+                var intersect = ((pi.y > point.y) != (pj.y > point.y))
+                                && (point.x < (pj.x - pi.x) * (point.y - pi.y) / Mathf.Max(0.000001f, (pj.y - pi.y)) + pi.x);
+                if (intersect)
+                {
+                    inside = !inside;
+                }
+
+                j = i;
+            }
+
+            return inside;
+        }
+
+        public static float MinDistanceToPolygon(Vector2 point, IReadOnlyList<Vector2> polygon)
+        {
+            if (polygon == null || polygon.Count < 2)
+            {
+                return float.PositiveInfinity;
+            }
+
+            var min = float.PositiveInfinity;
+            for (var i = 0; i < polygon.Count; i++)
+            {
+                var a = polygon[i];
+                var b = polygon[(i + 1) % polygon.Count];
+                min = Mathf.Min(min, DistancePointToSegment(point, a, b));
+            }
+
+            return min;
+        }
+
         private static bool HasSeparatingAxis(IReadOnlyList<Vector2> source, IReadOnlyList<Vector2> target)
         {
             if (source == null || target == null || source.Count < 3 || target.Count < 3)
