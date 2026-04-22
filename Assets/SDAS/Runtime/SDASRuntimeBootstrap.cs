@@ -31,7 +31,23 @@ namespace SDAS.Runtime
         [ContextMenu("Solve And Bind")]
         public void SolveAndBind()
         {
-            var data = useJsonAsInput ? LoadFromJson() : BuildDataFromScene();
+            if (spaceCoordinator == null)
+            {
+                Debug.LogError("[SDAS] SpaceCoordinator is not assigned.");
+                return;
+            }
+
+            SDASProjectData data;
+            try
+            {
+                data = useJsonAsInput ? LoadFromJson() : BuildDataFromScene();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SDAS] Failed to load input data: {ex.Message}");
+                return;
+            }
+
             var result = orchestrator.SolveWithFallback(data.chapters, data.siteData, solverConfig, fallbackPolicy, out var attempts);
             latestResult = result;
 
@@ -54,6 +70,12 @@ namespace SDAS.Runtime
         [ContextMenu("Apply First Chapter")]
         public void ApplyFirstChapter()
         {
+            if (spaceCoordinator == null)
+            {
+                Debug.LogError("[SDAS] SpaceCoordinator is not assigned.");
+                return;
+            }
+
             if (latestResult == null || latestResult.mappingResults.Count == 0)
             {
                 Debug.LogWarning("[SDAS] No mapping result available.");
@@ -80,6 +102,11 @@ namespace SDAS.Runtime
 
         private SDASProjectData LoadFromJson()
         {
+            if (string.IsNullOrWhiteSpace(jsonPath))
+            {
+                throw new System.ArgumentException("jsonPath is null or empty.");
+            }
+
             return SDASJsonSerializer.LoadFromFile(jsonPath);
         }
     }

@@ -16,6 +16,7 @@ namespace SDAS.Runtime.Solver
             SolverConfig config)
         {
             var breakdown = new CostBreakdown();
+            siteData ??= new SiteData();
             var candidatePivot = candidatePos + RotateXZ(chapter.EstimatedPivot(), candidateYaw);
 
             breakdown.link = ComputeLinkCost(chapter, candidatePivot, acceptedPlacements, allChapters);
@@ -120,6 +121,11 @@ namespace SDAS.Runtime.Solver
             }
 
             var minDistanceToObstacle = float.MaxValue;
+            if (siteData.obstacles == null)
+            {
+                siteData.obstacles = new List<SiteObstacle>();
+            }
+
             for (var i = 0; i < siteData.obstacles.Count; i++)
             {
                 var obstacle2D = To2D(siteData.obstacles[i].polygon);
