@@ -15,7 +15,7 @@
 - 增加全局优化（模拟退火或 Beam Search）
 - 增加 fallback 动态阈值调节（已完成）
 
-## Step 4
+## Step 4（进行中）
 - 实现 Chapter Editor 与 Site Mapper 的 Gizmo 与 Handles 编辑器工具
 
 ## Step 5
