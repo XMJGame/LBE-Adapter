@@ -76,6 +76,7 @@
 2. 先用 Circle Area 跑通。
 3. 成功后再加 Polygon 和障碍。
 4. 最后接入真实 XR Rig / XROrigin。
+5. 也可直接使用仓库样例：`Assets/SDAS/Samples/SevenChapters_200sqm.json`。
 
 ## 11) 导出数据怎么用（重点）
 
