@@ -25,6 +25,10 @@ namespace SDAS.Runtime.Solver
         public float rotationStepDeg = 1f;
         public int maxTranslationSamplesPerAxis = 20;
         public int maxRotationSamples = 16;
+        public bool enableGlobalRefinement = true;
+        public int annealingIterations = 200;
+        public float annealingStartTemperature = 2.0f;
+        public float annealingCoolingRate = 0.985f;
     }
 
     [Serializable]

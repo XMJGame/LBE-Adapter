@@ -9,6 +9,7 @@ namespace SDAS.Runtime.Solver
     public class SolverOrchestrator
     {
         private readonly GreedyChapterSolver greedySolver = new();
+        private readonly SimulatedAnnealingRefiner refiner = new();
 
         public SolverResult SolveWithFallback(
             IReadOnlyList<ChapterNode> chapters,
@@ -30,6 +31,17 @@ namespace SDAS.Runtime.Solver
 
                 if (latest.success)
                 {
+                    if (attemptConfig.enableGlobalRefinement)
+                    {
+                        var refined = refiner.Refine(latest.placements, chapters, siteData, attemptConfig);
+                        latest.placements = refined;
+                        latest.mappingResults.Clear();
+                        for (var i = 0; i < refined.Count; i++)
+                        {
+                            latest.mappingResults.Add(refined[i].ToMappingResult());
+                        }
+                    }
+
                     latest.message = $"Solved in attempt {usedAttempts}.";
                     return latest;
                 }
