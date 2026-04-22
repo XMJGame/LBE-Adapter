@@ -11,6 +11,7 @@ namespace SDAS.Runtime.Mapping
     {
         [Header("Rig")]
         [SerializeField] private Transform xrRigOffset;
+        [SerializeField] private Component xrOriginComponent;
 
         [Header("Redirection")]
         [SerializeField, Range(0.001f, 0.02f)] private float smoothLerp = 0.003f;
@@ -108,7 +109,18 @@ namespace SDAS.Runtime.Mapping
 
         private void EnsureRigController()
         {
-            rigController ??= new TransformXrRigController(xrRigOffset != null ? xrRigOffset : transform);
+            if (rigController != null)
+            {
+                return;
+            }
+
+            if (xrOriginComponent != null)
+            {
+                rigController = new XrOriginRigController(xrOriginComponent);
+                return;
+            }
+
+            rigController = new TransformXrRigController(xrRigOffset != null ? xrRigOffset : transform);
         }
     }
 }

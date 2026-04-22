@@ -18,6 +18,6 @@
 ## Step 4（进行中）
 - 实现 Chapter Editor 与 Site Mapper 的 Gizmo 与 Handles 编辑器工具
 
-## Step 5
+## Step 5（进行中）
 - 实现 Runtime SpaceCoordinator（硬切 + 平滑校准）
-- 接入 XROrigin
+- 接入 XROrigin（反射适配已完成）
