@@ -8,6 +8,7 @@ echo "[SDAS] current local branch: ${current_branch}"
 if ! git remote | grep -q .; then
   echo "[SDAS] no git remote configured in this environment."
   echo "[SDAS] push cannot be performed from here."
+  echo "[SDAS] see: GITHUB_PUSH_WORKFLOW.md"
   exit 0
 fi
 
