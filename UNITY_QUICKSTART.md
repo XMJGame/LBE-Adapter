@@ -76,3 +76,47 @@
 2. 先用 Circle Area 跑通。
 3. 成功后再加 Polygon 和障碍。
 4. 最后接入真实 XR Rig / XROrigin。
+
+## 11) 导出数据怎么用（重点）
+
+### 11.1 导出文件里有什么
+当你执行 `Solve And Bind` 且 `jsonPath` 非空时，系统会把当前数据写到 JSON，核心是：
+- `Chapters`：章节定义（行走区、约束等）
+- `SiteData`：边界、障碍、网关
+- `MappingResult`：每个章节最终求解结果（`worldPos/worldRotEuler/inverseOffset/inverseYaw`）
+
+`MappingResult` 中字段含义：
+- `worldPos/worldRotEuler`：章节在编辑器中的摆放结果（逻辑空间 -> 场地映射）
+- `inverseOffset/inverseYaw`：给 XR Rig 的补偿（运行时真正要用）
+
+### 11.2 运行时如何使用导出数据
+你有两种方式：
+
+1) **继续用 Bootstrap（最简单）**
+- 设置 `useJsonAsInput = true`
+- `jsonPath` 指向导出的 JSON
+- 再点 `Solve And Bind`（会读取 JSON 作为输入并重新求解绑定）
+
+2) **你自己的游戏流程直接消费 MappingResult（推荐）**
+- 游戏加载 JSON 后，拿到 `mappingResult` 列表。
+- 玩家进入章节时调用：
+  - `spaceCoordinator.ApplyChapter(chapterId)`（按章节 ID 应用）
+  - 或直接 `ApplyOffset(inverseOffset, inverseYaw)`（自定义切换逻辑）
+
+示例伪代码：
+
+```csharp
+var projectData = SDASJsonSerializer.LoadFromFile(path);
+spaceCoordinator.BindData(projectData.chapters, projectData.mappingResult);
+
+// 当玩家进入 chapter 3
+spaceCoordinator.ApplyChapter(3);
+```
+
+### 11.3 常见数据使用误区
+1. **只用 `worldPos` 不用 `inverseOffset`**（错误）
+   - 运行时应该驱动 XR Rig 的是 inverse 数据。
+2. **chapterId 对不上**
+   - 触发区 ID 与 `MappingResult.chapterId` 必须一致。
+3. **导出后又手动改章节拓扑但不重算**
+   - 章节或场地改动后，必须重新 `Solve And Bind` 再导出。
